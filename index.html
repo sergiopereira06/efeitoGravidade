@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravity</title>
+    <style>
+        canvas{
+            border: solid;
+        }
+    </style>
+</head>
+<body>
+    <canvas width="500" height="600"></canvas>
+    <script>
+        const cnv = document.querySelector("canvas")
+        const ctx = cnv.getContext("2d")
+        var balls = []
+        var numBalls = 100
+        class Ball {
+            constructor(x, y, r, color){
+                this.x = x;
+                this.y = y;
+                this.r = r;
+                this.vel = 10;
+                this.gravity = 0.8;
+                this.color = "hsl("+color+", 100%, 50%)"
+            }
+            draw(){
+                ctx.beginPath()
+                ctx.fillStyle = this.color
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2)
+                ctx.fill()
+                ctx.closePath()
+            }
+            move(){
+                this.vel+=this.gravity
+                this.y+=this.vel
+                if(this.y >= cnv.height - this.r || this.y <= 0 + this.r){
+                    this.vel*=-0.8
+                }
+                this.x = Math.max(0 + this.r, Math.min(this.x, cnv.width - this.r))
+                this.y = Math.max(0 + this.r, Math.min(this.y, cnv.height - this.r))
+            }
+        }
+        for(let i  = 0 ; i< numBalls; i++){
+            var xRand = Math.random()*cnv.width
+            var yRand = Math.random()*cnv.height
+            var rRand = Math.max(10, Math.random()*20)
+            var colorRand = Math.random()*360
+            balls.push(new Ball(xRand, yRand, rRand, colorRand))
+        }
+        function loop(){
+            ctx.clearRect(0, 0, cnv.width, cnv.height)
+            for(b in balls){
+                balls[b].draw()
+                balls[b].move()
+            }
+            requestAnimationFrame(loop)
+        }
+        loop()
+    </script>
+</body>
+</html>
